@@ -4,6 +4,8 @@
 
 #ifdef __APPLE__
   #include "SDL2_image/SDL_image.h"
+#elif _WIN32
+  #include <SDL2/SDL_image.h>
 #else
   #include "SDL_image.h"
 #endif
