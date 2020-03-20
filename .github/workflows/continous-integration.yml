@@ -17,16 +17,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           lfs: true
-      - task: Cache@2
-        name: Cache vcpkg
-        inputs:
-          key: $(Build.SourcesDirectory)/src/vcpp/vcpkg_x64-windows.txt | "$(vcpkgGitRef)" | "$(Agent.OS)"
-          path: '$(Build.BinariesDirectory)/vcpkg'
-      - task: run-vcpkg@0
-        name: Run vcpkg
-        inputs:
-          vcpkgArguments: '@$(Build.SourcesDirectory)/src/vcpp/vcpkg_x64-windows.txt'
-          vcpkgDirectory: $(Build.SourcesDirectory)/vcpkg
+      - name: Cache vcpkg's artifacts
+        uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}/vcpkg/
+          # The key will be different each time a different version of vcpkg is used, or different ports are installed.
+          key: ${{ hashFiles( src/vcpp/vcpkg_x64-windows.txt ) }}-${{ hashFiles('.git/modules/vcpkg/HEAD') }}-${{ runner.os }}
+      - name: Run vcpkg
+        uses: lukka/run-vcpkg@v0
+        with:
+        # Response file stored in source control, it provides the list of ports and triplet(s).
+          vcpkgArguments: src/vcpp/vcpkg_x64-windows.txt
+          # Location of the vcpkg as submodule of the repository.
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
       - name: Setup MSBuild
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build for Windows
