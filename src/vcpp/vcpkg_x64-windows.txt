@@ -1,0 +1,6 @@
+--triplet
+x64-windows
+zlib
+sdl2
+sdl2-mixer
+sdl2-image
