@@ -24,6 +24,8 @@ jobs:
           vcpkgArguments: src/vcpp/vcpkg_x64-windows.txt
           # Location of the vcpkg as submodule of the repository.
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          # Latest release (2020.1)
+          vcpkgGitCommitId: 7aebb481085de7387f8a9975652c26f9053f66df 
       - name: Setup MSBuild
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build for Windows
