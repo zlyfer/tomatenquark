@@ -21,14 +21,14 @@ jobs:
         with:
           repository: 'microsoft/vcpkg'
           path: vcpkg
+      - name: Setup MSBuild
+        uses: warrenbuckley/Setup-MSBuild@v1
       - name: Run vcpkg
         working-directory: .\vcpkg
         run: |
           .\bootstrap-vcpkg.bat
           .\vcpkg.exe install zlib sdl2 sdl2-image sdl2-mixer
           .\vcpkg.exe integrate install
-      - name: Setup MSBuild
-        uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build for Windows
         working-directory: ./src/vcpp
         run: msbuild /property:Platform=x64 tomatenquark.sln
