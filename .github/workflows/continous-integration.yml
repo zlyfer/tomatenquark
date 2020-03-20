@@ -17,11 +17,21 @@ jobs:
       - uses: actions/checkout@v2
         with:
           lfs: true
+      - task: Cache@2
+        name: Cache vcpkg
+        inputs:
+          key: $(Build.SourcesDirectory)/src/vcpp/vcpkg_x64-windows.txt | "$(vcpkgGitRef)" | "$(Agent.OS)"
+          path: '$(Build.BinariesDirectory)/vcpkg'
+      - task: run-vcpkg@0
+        name: Run vcpkg
+        inputs:
+          vcpkgArguments: '@$(Build.SourcesDirectory)/src/vcpp/vcpkg_x64-windows.txt'
+          vcpkgDirectory: $(Build.SourcesDirectory)/vcpkg
       - name: Setup MSBuild
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build for Windows
         working-directory: ./src/vcpp
-        run: msbuild /p:PlatformToolset=v142 /property:Platform=x64 tomatenquark.sln
+        run: msbuild /property:Platform=x64 tomatenquark.sln
   build-ubuntu:
     runs-on: ubuntu-latest
     steps:
