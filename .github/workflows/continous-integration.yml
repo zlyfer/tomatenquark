@@ -17,15 +17,16 @@ jobs:
       - uses: actions/checkout@v2
         with:
           lfs: true
-      - name: Run vcpkg
-        uses: lukka/run-vcpkg@v0
+      - uses: actions/checkout@v2
         with:
-        # Response file stored in source control, it provides the list of ports and triplet(s).
-          vcpkgArguments: zlib sdl2 sdl2-image sdl2-mixer
-          # Location of the vcpkg as submodule of the repository.
-          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          # Latest release (2020.1)
-          vcpkgGitCommitId: 7aebb481085de7387f8a9975652c26f9053f66df 
+          repository: 'microsoft/vcpkg'
+          path: vcpkg
+      - name: Run vcpkg
+        working-directory: .\vcpkg
+        run: |
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe install zlib sdl2 sdl2-image sdl2-mixer
+          .\vcpkg.exe integrate install
       - name: Setup MSBuild
         uses: warrenbuckley/Setup-MSBuild@v1
       - name: Build for Windows
