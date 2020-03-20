@@ -21,7 +21,7 @@ jobs:
         uses: lukka/run-vcpkg@v0
         with:
         # Response file stored in source control, it provides the list of ports and triplet(s).
-          vcpkgArguments: src/vcpp/vcpkg_x64-windows.txt
+          vcpkgArguments: zlib sdl2 sdl2-image sdl2-mixer
           # Location of the vcpkg as submodule of the repository.
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           # Latest release (2020.1)
