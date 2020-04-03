@@ -5,11 +5,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.1.0] - 2020-03-04
+## Changed
+- No more armor in regen capture
+- Use multiple file downloads method to download map resources
+
 ## Added
+- `showserverhost` which will hide IP and port of servers by default
+- `mmodelfile` to indicate resources
+
+## [0.0.23] - 2020-01-04
+## Fixed
+- fixed lightmaps crashing the game on windows
+- fixed path issues with assetbundler on windows
+- don't localconnect while the client initializes
+
+## [0.0.22] - 2020-30-03
+## Added
+- Added `maxhealth` display and colored health display
 - Automatically balance spectators as well
 - Added WAV scaling so the sound will be improved better (experimental)
+- Added `downloadmaps` and `servercontent` variables to send maps
 
 ## Changed
+- Hold drop penalty has been changed from 2 to 3
 - Updated Windows SDL dependency to 2.0.12
 
 ## [0.0.21] - 2020-22-03
@@ -900,7 +920,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - cleaned up octaedit
 - hacked a fix for a culling error in touchingfaces
 
-[Unreleased]: https://github.com/tomatenquark/code/compare/v0.0.21...HEAD
+[Unreleased]: https://github.com/tomatenquark/code/compare/v0.0.23...HEAD
+[0.0.23]: https://github.com/tomatenquark/code/compare/v0.0.22...v0.0.23
+[0.0.22]: https://github.com/tomatenquark/code/compare/v0.0.21...v0.0.22
 [0.0.21]: https://github.com/tomatenquark/code/compare/v0.0.20...v0.0.21
 [0.0.20]: https://github.com/tomatenquark/code/compare/v0.0.19...v0.0.20
 [0.0.19]: https://github.com/tomatenquark/code/compare/v0.0.18...v0.0.19

@@ -402,6 +402,7 @@ VARP(searchlan, 0, 0, 1);
 VARP(servpingrate, 1000, 5000, 60000);
 VARP(servpingdecay, 1000, 15000, 60000);
 VARP(maxservpings, 0, 10, 1000);
+VARP(showserverhost, 0, 0, 1);
 
 pingattempts lanpings;
 
@@ -577,6 +578,7 @@ const char *showservers(g3d_gui *cgui, uint *header, int pagemin, int pagemax)
         cgui->pushlist();
         loopi(10)
         {
+            if (!showserverhost && (i == 6 || i == 7)) continue;
             if(!game::serverinfostartcolumn(cgui, i)) break;
             for(int j = start; j < end; j++)
             {

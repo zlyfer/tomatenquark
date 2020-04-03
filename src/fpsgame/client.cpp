@@ -5,7 +5,15 @@ namespace game
     VARP(minradarscale, 0, 384, 10000);
     VARP(maxradarscale, 1, 1024, 10000);
     VARP(radarteammates, 0, 1, 1);
+    VARP(downloadmaps, 0, 1, 1);
     FVARP(minimapalpha, 0, 1, 1);
+    static char servercontent[MAXTRANS];
+
+    void getservercontent()
+    {
+        conoutf("%s", servercontent);
+    }
+    COMMAND(getservercontent, "");
 
     float calcradarscale()
     {
@@ -510,12 +518,37 @@ namespace game
     int gamemode = INT_MAX, nextmode = INT_MAX;
     string clientmap = "";
 
+    void format_servercontent(char* content) {
+        if (strstr(content, "http://")) memmove(&content[0], &content[7], strlen(content) - 6);
+        if (strstr(content, "https://")) memmove(&content[0], &content[8], strlen(content) - 7);
+        // Replace characters that would be invalid on Windows FS
+        for (int i = 0; i < strlen(content); i++) if (content[i] == '.') memmove(&content[i], &content[i + 1], strlen(content) - i - 1);
+        for (int i = 0; i < strlen(content); i++) if (content[i] == ':') memmove(&content[i], &content[i + 1], strlen(content) - i - 1);
+    }
+
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
         if(multiplayer(false) && !m_mp(mode))
         {
             conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modename(gamemode), gamemode);
             loopi(NUMGAMEMODES) if(m_mp(STARTGAMEMODE + i)) { mode = STARTGAMEMODE + i; break; }
+        }
+        
+        if(multiplayer(false) && downloadmaps && strlen(servercontent))
+        {
+            conoutf(CON_INFO, "downloading map %s", name);
+            int status = DOWNLOAD_PROGRESS;
+            string serverdir = "";
+            copystring(serverdir, servercontent);
+            format_servercontent(serverdir);
+            prependstring(serverdir, homedir);
+            assetbundler::download_map(servercontent, (char*)name, (char*)serverdir, &status);
+            renderbackground("downloading map... (esc to abort)");
+            while (status == DOWNLOAD_PROGRESS) {
+                renderbackground("downloading map... (esc to abort)");
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            if (status == DOWNLOAD_FINISHED) addpackagedir(serverdir);
         }
 
         gamemode = mode;
@@ -1347,6 +1380,11 @@ namespace game
                 break;
             }
 
+            case N_SERVERCONTENT:
+                getstring(text, p);
+                strcpy(servercontent, text);
+                break;
+                
             case N_MAPCHANGE:
                 getstring(text, p);
                 changemapserv(text, getint(p));

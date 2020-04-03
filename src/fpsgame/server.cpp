@@ -615,6 +615,7 @@ namespace server
     SVAR(serverdesc, "");
     SVAR(serverpass, "");
     SVAR(adminpass, "");
+    SVAR(servercontent, "");
     VARF(publicserver, 0, 0, 2, {
 		switch(publicserver)
 		{
@@ -1791,6 +1792,10 @@ namespace server
     int welcomepacket(packetbuf &p, clientinfo *ci)
     {
         putint(p, N_WELCOME);
+        if (strlen(servercontent)) {
+            putint(p, N_SERVERCONTENT);
+            sendstring(servercontent, p);
+        }
         putint(p, N_MAPCHANGE);
         sendstring(smapname, p);
         putint(p, gamemode);
@@ -2059,6 +2064,7 @@ namespace server
         loopv(votes) if(!best || votes[i].count > best->count || (votes[i].count == best->count && rnd(2))) best = &votes[i];
         if(force || (best && best->count > maxvotes/2))
         {
+            sendpackets(true);
             if(demorecord) enddemorecord();
             if(best && (best->count > (force ? 1 : maxvotes/2)))
             {
@@ -2104,6 +2110,7 @@ namespace server
         ci->modevote = reqmode;
         if(ci->local || (ci->privilege && mastermode>=MM_VETO))
         {
+            sendpackets(true);
             if(demorecord) enddemorecord();
             if(!ci->local || hasnonlocalclients())
                 sendservmsgf("%s forced %s on map %s", colorname(ci), modename(ci->modevote), ci->mapvote[0] ? ci->mapvote : "[new map]");
